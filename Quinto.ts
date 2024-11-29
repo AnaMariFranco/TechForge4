@@ -1,34 +1,46 @@
-abstract class Funcionario {
-    constructor(private nome: string, private salario: number) {}
+interface LivroBiblioteca {
+    titulo: string;
+autor: string;
+genero: string;
+disponivel: boolean;
+}
 
-    abstract calcularBonus(): number;
+class BibliotecaGestao {
+livros: LivroBiblioteca[] = [];
 
-    calcularSalarioComBonus(): number {
-        return this.salario + this.calcularBonus();
+adicionarLivro(livro: LivroBiblioteca): void {
+        this.livros.push(livro);
+    }
+
+    filtrarPorGenero(genero: string): LivroBiblioteca[] {
+        return this.livros.filter(livro => livro.genero === genero);
+    }
+
+    buscarPorAutor(autor: string): LivroBiblioteca[] {
+        return this.livros.filter(livro => livro.autor === autor);
+    }
+
+    obterLivrosDisponiveisOrdenados(): LivroBiblioteca[] {
+        return this.livros
+            .filter(livro => livro.disponivel)
+            .sort((a, b) => a.titulo.localeCompare(b.titulo));
     }
 }
 
-class Gerente extends Funcionario {
-    calcularBonus(): number {
-        return this.salario * 0.10;
-    }
-}
+const bibliotecaGestao = new BibliotecaGestao();
 
-class Operario extends Funcionario {
-    calcularBonus(): number {
-        return this.salario * 0.05;
-    }
-}
+bibliotecaGestao.adicionarLivro({ titulo: "Percy Jackson e o Ladrão de Raios", autor: "Rick Riordan", genero: "Fantasia", disponivel: true });
+bibliotecaGestao.adicionarLivro({ titulo: "A Esperança", autor: "Suzanne Collins", genero: "Distopia", disponivel: false });
+bibliotecaGestao.adicionarLivro({ titulo: "O Filho de Netuno", autor: "Rick Riordan", genero: "Fantasia", disponivel: true });
+bibliotecaGestao.adicionarLivro({ titulo: "Jogos Vorazes", autor: "Suzanne Collins", genero: "Distopia", disponivel: true });
+bibliotecaGestao.adicionarLivro({ titulo: "O Herói Perdido", autor: "Rick Riordan", genero: "Fantasia", disponivel: true });
 
-function calcularSalariosComBonus(funcionarios: Funcionario[]): void {
-    funcionarios.forEach(funcionario => {
-        console.log(`Salário com bônus: ${funcionario.calcularSalarioComBonus()}`);
-    });
-}
+const livrosFantasia = bibliotecaGestao.filtrarPorGenero("Fantasia");
+console.log("Livros de Fantasia:", livrosFantasia);
 
-const funcionarios: Funcionario[] = [
-    new Gerente("Aline", 4000),
-    new Operario("Diego", 150)
-];
+const livrosOrwell = bibliotecaGestao.buscarPorAutor("George Orwell");
+console.log("Livros de George Orwell:", livrosOrwell);
 
-calcularSalariosComBonus(funcionarios);
+
+const livrosDisponiveisOrdenados = bibliotecaGestao.obterLivrosDisponiveisOrdenados();
+console.log("Livros Disponíveis Ordenados:", livrosDisponiveisOrdenados);

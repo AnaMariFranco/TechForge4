@@ -1,31 +1,27 @@
-class Animal {
-    private energia: number = 0;
-
-    comer(): void {
-        this.energia += 10;
-        console.log("Comendo, energia aumentada.");
-    }
-
-    statusEnergia(): void {
-        console.log(`Nível de energia: ${this.energia}`);
-    }
+interface Livro {
+    titulo: string;
+autor: string;
+disponivel: boolean;
 }
 
-class Leao extends Animal {
-    comer(): void {
-        console.log("Caçando...");
-        this.energia -= 5;
-        super.comer();
+class Biblioteca {
+livros: Livro[] = [];
+
+adicionarLivro(livro: Livro): void {
+        this.livros.push(livro);
+    }
+
+    buscarLivrosDisponiveis(): Livro[] {
+        return this.livros.filter(livro => livro.disponivel);
     }
 }
 
-class Passaro extends Animal {
-}
+const biblioteca = new Biblioteca();
 
-const leão = new Leao();
-leão.comer();
-leão.statusEnergia();
+biblioteca.adicionarLivro({ titulo: "Admirável Mundo Novo", autor: "Aldous Huxley", disponivel: true });
+biblioteca.adicionarLivro({ titulo: "Fahrenheit 451", autor: "Ray Bradbury", disponivel: false });
+biblioteca.adicionarLivro({ titulo: "O Conto da Aia", autor: "Margaret Atwood", disponivel: true });
 
-const passaro = new Passaro();
-passaro.comer();
-passaro.statusEnergia();
+const livrosDisponiveis = biblioteca.buscarLivrosDisponiveis();
+
+console.log(livrosDisponiveis);

@@ -1,47 +1,21 @@
-abstract class FiguraGeometrica {
-    abstract calcularArea(): number;
+interface Documento {
+    titulo: string;
+conteudo: string;
 }
 
-class Circulo extends FiguraGeometrica {
-    constructor(private raio: number) {
-        super();
+class Texto implements Documento {
+titulo: string;
+conteudo: string;
+
+constructor(titulo: string, conteudo: string) {
+        this.titulo = titulo;
+        this.conteudo = conteudo;
     }
 
-    calcularArea(): number {
-        return Math.PI * this.raio * this.raio;
-    }
-}
-
-class Quadrado extends FiguraGeometrica {
-    constructor(private lado: number) {
-        super();
-    }
-
-    calcularArea(): number {
-        return this.lado * this.lado;
+    exibir(): string {
+        return `Título: ${this.titulo}, Conteúdo: ${this.conteudo}`;
     }
 }
 
-class Triangulo extends FiguraGeometrica {
-    constructor(private base: number, private altura: number) {
-        super();
-    }
-
-    calcularArea(): number {
-        return (this.base * this.altura) / 2;
-    }
-}
-
-function imprimirAreas(figuras: FiguraGeometrica[]): void {
-    figuras.forEach(figura => {
-        console.log(figura.calcularArea());
-    });
-}
-
-const figuras: FiguraGeometrica[] = [
-    new Circulo(5),
-    new Quadrado(4),
-    new Triangulo(3, 6)
-];
-
-imprimirAreas(figuras);
+const documento1 = new Texto("TypeScript", "oi");
+console.log(documento1.exibir());

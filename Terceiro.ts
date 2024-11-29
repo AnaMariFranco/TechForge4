@@ -1,30 +1,28 @@
-class Pagamento {
-    processar(): void {
-        console.log("Processando pagamento");
+interface ProdutoLoja {
+    codigo: number;
+nome: string;
+}
+
+class Loja {
+produtos: ProdutoLoja[] = [];
+
+adicionarProduto(produto: ProdutoLoja): void {
+        this.produtos.push(produto);
+    }
+
+    buscarProdutoPorCodigo(codigo: number): ProdutoLoja | undefined {
+        return this.produtos.find(produto => produto.codigo === codigo);
     }
 }
 
-class PagamentoCartao extends Pagamento {
-    processar(): void {
-        console.log("Validando cartão e processando pagamento");
-    }
-}
+const loja = new Loja();
 
-class PagamentoBoleto extends Pagamento {
-    processar(): void {
-        console.log("Gerando código de boleto");
-    }
-}
+loja.adicionarProduto({ codigo: 1, nome: "blusa" });
+loja.adicionarProduto({ codigo: 2, nome: "pulseira" });
+loja.adicionarProduto({ codigo: 3, nome: "brinco" });
 
-function processarPagamentos(pagamentos: Pagamento[]): void {
-    pagamentos.forEach(pagamento => {
-        pagamento.processar();
-    });
-}
+const produto1 = loja.buscarProdutoPorCodigo(2);
+const produtoNaoEncontrado = loja.buscarProdutoPorCodigo(4);
 
-const pagamentos: Pagamento[] = [
-    new PagamentoCartao(),
-    new PagamentoBoleto()
-];
-
-processarPagamentos(pagamentos);
+console.log(produto1);
+console.log(produtoNaoEncontrado);

@@ -1,21 +1,60 @@
-interface Documento {
-    titulo: string;
-conteudo: string;
+abstract class Inventory {
+    abstract addItem(item: string, quantity: number): void;
+  abstract removeItem(item: string): void;
+  abstract getInventory(): Record<string, number>;
 }
 
-class Texto implements Documento {
-titulo: string;
-conteudo: string;
+class WarehouseInventory extends Inventory {
+  private inventory: Record<string, number> = {};
 
-constructor(titulo: string, conteudo: string) {
-        this.titulo = titulo;
-        this.conteudo = conteudo;
-    }
+  addItem(item: string, quantity: number): void {
+    this.inventory[item] = (this.inventory[item] || 0) + quantity;
+  }
 
-    exibir(): string {
-        return `Título: ${this.titulo}, Conteúdo: ${this.conteudo}`;
+  removeItem(item: string): void {
+    if (this.inventory[item]) {
+      delete this.inventory[item];
+    } else {
+      console.log('Item não encontrado no inventário.');
     }
+  }
+
+  getInventory(): Record<string, number> {
+    return this.inventory;
+  }
 }
 
-const documento1 = new Texto("TypeScript", "oi");
-console.log(documento1.exibir());
+class StoreInventory extends Inventory {
+  private inventory: Record<string, number> = {};
+
+  addItem(item: string, quantity: number): void {
+    const currentQuantity = this.inventory[item] || 0;
+    if (currentQuantity + quantity <= 10) {
+      this.inventory[item] = currentQuantity + quantity;
+    } else {
+      console.log(`Não é possível adicionar ${quantity} unidades de ${item}. Limite máximo atingido.`);
+    }
+  }
+
+  removeItem(item: string): void {
+    if (this.inventory[item]) {
+      delete this.inventory[item];
+    } else {
+      console.log('Item não encontrado no inventário.');
+    }
+  }
+
+  getInventory(): Record<string, number> {
+    return this.inventory;
+  }
+}
+
+const warehouse = new WarehouseInventory();
+warehouse.addItem('Produto A', 50);
+warehouse.addItem('Produto B', 20);
+console.log(warehouse.getInventory());
+
+const store = new StoreInventory();
+store.addItem('Produto C', 5);
+store.addItem('Produto C', 6);
+console.log(store.getInventory());

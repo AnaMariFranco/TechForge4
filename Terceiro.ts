@@ -1,28 +1,43 @@
-interface ProdutoLoja {
-    codigo: number;
-nome: string;
+abstract class FavoriteManager {
+    abstract addFavorite(item: string): void;
+  abstract getFavorites(): string[];
 }
 
-class Loja {
-produtos: ProdutoLoja[] = [];
+class MoviesFavoriteManager extends FavoriteManager {
+  private favorites: Set<string> = new Set();
 
-adicionarProduto(produto: ProdutoLoja): void {
-        this.produtos.push(produto);
+  addFavorite(item: string): void {
+    if (this.favorites.has(item)) {
+      console.log(`Filme "${item}" já está na lista de favoritos.`);
+    } else {
+      this.favorites.add(item);
     }
+  }
 
-    buscarProdutoPorCodigo(codigo: number): ProdutoLoja | undefined {
-        return this.produtos.find(produto => produto.codigo === codigo);
-    }
+  getFavorites(): string[] {
+    return Array.from(this.favorites).sort();
+  }
 }
 
-const loja = new Loja();
+class BooksFavoriteManager extends FavoriteManager {
+  private favorites: string[] = [];
 
-loja.adicionarProduto({ codigo: 1, nome: "blusa" });
-loja.adicionarProduto({ codigo: 2, nome: "pulseira" });
-loja.adicionarProduto({ codigo: 3, nome: "brinco" });
+  addFavorite(item: string): void {
+    this.favorites.unshift(item);
+  }
 
-const produto1 = loja.buscarProdutoPorCodigo(2);
-const produtoNaoEncontrado = loja.buscarProdutoPorCodigo(4);
+  getFavorites(): string[] {
+    return this.favorites;
+  }
+}
 
-console.log(produto1);
-console.log(produtoNaoEncontrado);
+const moviesManager = new MoviesFavoriteManager();
+moviesManager.addFavorite('HP');
+moviesManager.addFavorite('Matrix');
+moviesManager.addFavorite('HP');
+console.log(moviesManager.getFavorites());
+
+const booksManager = new BooksFavoriteManager();
+booksManager.addFavorite('1984');
+booksManager.addFavorite('A caban');
+console.log(booksManager.getFavorites());

@@ -1,27 +1,41 @@
-interface Livro {
-    titulo: string;
-autor: string;
-disponivel: boolean;
+abstract class VoteSystem {
+    abstract voteFor(candidate: string): void;
+  abstract getResults(): object;
 }
 
-class Biblioteca {
-livros: Livro[] = [];
+class Election extends VoteSystem {
+  private votes: Record<string, number> = {};
 
-adicionarLivro(livro: Livro): void {
-        this.livros.push(livro);
-    }
+  voteFor(candidate: string): void {
+    this.votes[candidate] = (this.votes[candidate] || 0) + 1;
+  }
 
-    buscarLivrosDisponiveis(): Livro[] {
-        return this.livros.filter(livro => livro.disponivel);
-    }
+  getResults(): object {
+    return this.votes;
+  }
 }
 
-const biblioteca = new Biblioteca();
+class Poll extends VoteSystem {
+  private votes: Record<string, number> = {};
 
-biblioteca.adicionarLivro({ titulo: "Admirável Mundo Novo", autor: "Aldous Huxley", disponivel: true });
-biblioteca.adicionarLivro({ titulo: "Fahrenheit 451", autor: "Ray Bradbury", disponivel: false });
-biblioteca.adicionarLivro({ titulo: "O Conto da Aia", autor: "Margaret Atwood", disponivel: true });
+  voteFor(candidate: string): void {
+    this.votes[candidate] = (this.votes[candidate] || 0) + 1;
+  }
 
-const livrosDisponiveis = biblioteca.buscarLivrosDisponiveis();
+  getResults(): object {
+    const sortedVotes = Object.entries(this.votes).sort((a, b) => b[1] - a[1]);
+    return Object.fromEntries(sortedVotes);
+  }
+}
 
-console.log(livrosDisponiveis);
+const election = new Election();
+election.voteFor('Candidato A');
+election.voteFor('Candidato B');
+election.voteFor('Candidato A');
+console.log(election.getResults());
+
+const poll = new Poll();
+poll.voteFor('Candidato A');
+poll.voteFor('Candidato B');
+poll.voteFor('Candidato A');
+console.log(poll.getResults());

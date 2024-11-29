@@ -1,185 +1,126 @@
-//Prof, eu tentei subir no git clone mas o pc da faculdade não estava deixando, fiquei horas tentando. 
+class Order {
+    private items: string[] = [];
+private totalPrice: number = 0;
+private paymentStatus: string = 'Pendente';
+private shippingStatus: string = 'Pendente';
 
+addItem(item: string, price: number): void {
+    this.items.push(item);
+    this.totalPrice += price;
+  }
 
-class ContaBancaria {
-    titular: string;
-saldo: number;
-
-constructor(titular: string) {
-        this.titular = titular;
-        this.saldo = 0;
+  processPayment(): void {
+    if (this.totalPrice > 0) {
+      this.paymentStatus = 'Pago';
+      console.log('Pagamento processado com sucesso');
+    } else {
+      console.log('Erro: Total do pedido invalido');
     }
+  }
 
-    depositar(valor: number): void {
-        this.saldo += valor;
-    }
+  updateShippingStatus(status: string): void {
+    this.shippingStatus = status;
+    console.log(`Status de envio: ${status}`);
+  }
 
-    sacar(valor: number): void {
-        if (valor <= this.saldo) {
-            this.saldo -= valor;
-        } else {
-            console.log("saldo insuficiente");
-        }
-    }
-
-    mostrarSaldo(): number {
-        return this.saldo;
-    }
+  displayOrderInfo(): void {
+    console.log(`Itens: ${this.items.join(', ')}`);
+    console.log(`Preço Total: R$${this.totalPrice}`);
+    console.log(`Status de Pagamento: ${this.paymentStatus}`);
+    console.log(`Status de Envio: ${this.shippingStatus}`);
+  }
 }
 
-class Livro {
-    titulo: string;
-    autor: string;
-    paginas: number;
-    lido: boolean;
+const order = new Order();
+order.addItem('Produto A', 10);
+order.addItem('Produto B', 50);
+order.processPayment();
+order.updateShippingStatus('Enviado');
+order.displayOrderInfo();
 
-    constructor(titulo: string, autor: string, paginas: number) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.paginas = paginas;
-        this.lido = false;
-    }
+//refatoração
+class Cart {
+  private items: { name: string, price: number }[] = [];
+  private totalPrice: number = 0;
 
-    marcarComoLido(): void {
-        this.lido = true;
-    }
+  addItem(item: string, price: number): void {
+    this.items.push({ name: item, price });
+    this.totalPrice += price;
+  }
+
+  getTotalPrice(): number {
+    return this.totalPrice;
+  }
+
+  getItems(): string[] {
+    return this.items.map(item => item.name);
+  }
 }
 
-class Produto {
-    nome: string;
-    preco: number;
-    quantidade: number;
+class Payment {
+  private paymentStatus: string = 'Pendente';
 
-    constructor(nome: string, preco: number, quantidade: number) {
-        this.nome = nome;
-        this.preco = preco;
-        this.quantidade = quantidade;
+  processPayment(totalPrice: number): void {
+    if (totalPrice > 0) {
+      this.paymentStatus = 'Pago';
+      console.log('Pagamento processado com sucesso!');
+    } else {
+      console.log('Erro: Total do pedido inválido!');
     }
+  }
 
-    valorTotalEmEstoque(): number {
-        return this.preco * this.quantidade;
-    }
+  getPaymentStatus(): string {
+    return this.paymentStatus;
+  }
 }
 
-class Temperatura {
-    valor: number;
+class Shipping {
+  private shippingStatus: string = 'Pendente';
 
-    constructor(valor: number) {
-        this.valor = valor;
-    }
+  updateShippingStatus(status: string): void {
+    this.shippingStatus = status;
+    console.log(`Status de envio: ${status}`);
+  }
 
-    paraFahrenheit(): number {
-        return (this.valor * 9/5) + 32;
-    }
-
-    paraKelvin(): number {
-        return this.valor + 273.15;
-    }
+  getShippingStatus(): string {
+    return this.shippingStatus;
+  }
 }
 
-class Agenda {
-    compromissos: string[];
+class Order {
+  private cart: Cart;
+  private payment: Payment;
+  private shipping: Shipping;
 
-    constructor() {
-        this.compromissos = [];
-    }
+  constructor() {
+    this.cart = new Cart();
+    this.payment = new Payment();
+    this.shipping = new Shipping();
+  }
 
-    adicionarCompromisso(compromisso: string): void {
-        this.compromissos.push(compromisso);
-    }
+  addItem(item: string, price: number): void {
+    this.cart.addItem(item, price);
+  }
 
-    listarCompromissos(): string[] {
-        return this.compromissos;
-    }
-}
-class ContaBancaria {
-    titular: string;
-saldo: number;
+  processPayment(): void {
+    this.payment.processPayment(this.cart.getTotalPrice());
+  }
 
-constructor(titular: string) {
-        this.titular = titular;
-        this.saldo = 0;
-    }
+  updateShippingStatus(status: string): void {
+    this.shipping.updateShippingStatus(status);
+  }
 
-    depositar(valor: number): void {
-        this.saldo += valor;
-    }
-
-    sacar(valor: number): void {
-        if (valor <= this.saldo) {
-            this.saldo -= valor;
-        } else {
-            console.log("saldo insuficiente");
-        }
-    }
-
-    mostrarSaldo(): number {
-        return this.saldo;
-    }
+  displayOrderInfo(): void {
+    console.log(`Itens: ${this.cart.getItems().join(', ')}`);
+    console.log(`Preço Total: R$${this.cart.getTotalPrice()}`);
+    console.log(`Status de Pagamento: ${this.payment.getPaymentStatus()}`);
+    console.log(`Status de Envio: ${this.shipping.getShippingStatus()}`);
+  }
 }
 
-class Livro {
-    titulo: string;
-    autor: string;
-    paginas: number;
-    lido: boolean;
-
-    constructor(titulo: string, autor: string, paginas: number) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.paginas = paginas;
-        this.lido = false;
-    }
-
-    marcarComoLido(): void {
-        this.lido = true;
-    }
-}
-
-class Produto {
-    nome: string;
-    preco: number;
-    quantidade: number;
-
-    constructor(nome: string, preco: number, quantidade: number) {
-        this.nome = nome;
-        this.preco = preco;
-        this.quantidade = quantidade;
-    }
-
-    valorTotalEmEstoque(): number {
-        return this.preco * this.quantidade;
-    }
-}
-
-class Temperatura {
-    valor: number;
-
-    constructor(valor: number) {
-        this.valor = valor;
-    }
-
-    paraFahrenheit(): number {
-        return (this.valor * 9/5) + 32;
-    }
-
-    paraKelvin(): number {
-        return this.valor + 273.15;
-    }
-}
-
-class Agenda {
-    compromissos: string[];
-
-    constructor() {
-        this.compromissos = [];
-    }
-
-    adicionarCompromisso(compromisso: string): void {
-        this.compromissos.push(compromisso);
-    }
-
-    listarCompromissos(): string[] {
-        return this.compromissos;
-    }
-}
+const order = new Order();
+order.addItem('Produto A', 10);
+order.addItem('Produto B',0);
+order.processPayment();
+order.updateShippingStatus('Enviado');
+order.displayOrderInfo();
